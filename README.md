@@ -1,7 +1,7 @@
 <H3>ENTER YOUR NAME:SENTHAMIL SELVAN G</H3>
-<H3>ENTER YOUR REGISTER NO.212222230139</H3>
+<H3>ENTER YOUR REGISTER NO. 212222230139</H3>
 <H3>EX. NO.4</H3>
-<H3>DATE:</H3>
+<H3>DATE:    </H3>
 <H1 ALIGN =CENTER> Implementation of Hidden Markov Model</H1>
 
 ## Aim: 
@@ -21,44 +21,66 @@ Step 8:Calculate the probability of the observed sequence by summing the last ro
 Step 9:Find the most likely sequence of hidden states by selecting the hidden state with the highest probability at each time step based on the alpha matrix.<br>
 
 ## Program:
-```python
+### Import the necessary packages
+```
 import numpy as np
-t_m = np.array([[0.7,0.3],
-                [0.4, 0.6]])
-e_m = np.array([[0.1,0.9],
-                [0.8,0.2]])
-i_p = np.array([0.5,0.5])
+```
+### Define the transition matrix,emission matrix,initial probabilitiesand observed sequence.
+```
+transition_matrix=np.array([[0.7,0.3],[0.4,0.6]])
+initial_probabilities=np.array([0.5,0.5])
+observed_sequence=np.array([1,1,1,0,0,1])
+emisson_matrix=np.array([[0.1,0.9],[0.8,0.2]])
 
-o_s = np.array([1,1,1,0,0,1])
+```
+### Initialize the alpha matrix
+```
+alpha=np.zeros((len(observed_sequence),len(initial_probabilities)))
 
-alpha = np.zeros((len(o_s),len(i_p)))
+```
+### Calculate the first row of the alpha matrix
+```
+alpha[0,:]=initial_probabilities*emisson_matrix[:,observed_sequence[0]]
+```
+### Loop through the rest of the observed sequence and calculate the rest of the alpha matrix
+```
+for t in range(1,len(observed_sequence)):
+  for j in range(len(initial_probabilities)):
+    alpha[t,j]=emisson_matrix[j,observed_sequence[t]]*np.sum(alpha[t-1,:]*transition_matrix[:,j])
 
-alpha[0, :] = i_p * e_m[:, o_s[0]]
+```
+### Calculate the probability of the observed sequence
+```
+probability=np.sum(alpha[-1,:])
 
-for t in range(1, len(o_s)):
+```
+### Print the probability of the observed sequence
+```
+print("The probability of the observed sequence is:",probability)
+```
 
-  for j in range(len(i_p)):
-
-    alpha[t, j ] = e_m[j,o_s[t]] * np.sum(alpha[t-1, :] * t_m[:, j ])
-
-prob = np.sum(alpha[-1, :])
-
-print("The Probability of the observed sequence is :",prob)
-
-m_l_s = []
-for t in range(len(o_s)):
-  if alpha[t, 0] > alpha[t,1]:
-    m_l_s.append("sunny")
+### Find the most likely sequence of weather states given the observed sequence
+```
+most_likely_sequence=[]
+for t in range(len(observed_sequence)):
+  if(alpha[t,0] > alpha[t,1]):
+    most_likely_sequence.append("sunny")
   else:
-    m_l_s.append("rainy")  
+    most_likely_sequence.append('rainy')
 
-print("Thye most likely sequence of weather states is :",m_l_s)
-
+```
+### Print the most likely sequence of weather states
+```
+print("The most likely sequence of weather states is:",most_likely_sequence)
 ```
 
 ## Output:
-![313474392-3f66152a-e0f1-4741-b38a-73f63e53a010](https://github.com/Senthamil1412/Ex-4--AAI/assets/119120228/f26e357e-6fb0-4269-9be0-5fa360f6fc0d)
-![313474402-24fde82e-bbca-4e2e-a3dd-3ad0d801e66c](https://github.com/Senthamil1412/Ex-4--AAI/assets/119120228/b9b4f1db-7f56-4a74-b5f5-aded25cad376)
+## probability of the observed sequence
+![311932638-ff33bf9a-549c-4fe2-8fe3-da8e51f8b6a8](https://github.com/Senthamil1412/Ex-4--AAI/assets/119120228/35120cf1-ef58-40ac-8fd1-cc311c6756de)
+
+## Print the most likely sequence of weather states
+![311932669-a545e4b2-430c-4b06-bd12-9c52a17384a6](https://github.com/Senthamil1412/Ex-4--AAI/assets/119120228/13b86685-50ef-433d-8f19-56bc3bf7071f)
+
 
 
 
